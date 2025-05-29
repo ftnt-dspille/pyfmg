@@ -80,15 +80,6 @@ jobs:
           echo "requests" > prod-requirements.txt
           pip-audit --requirement prod-requirements.txt --format=json --output=security-report.json || true
 
-      - name: Upload security reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: security-reports
-          path: |
-            bandit-report.json
-            security-report.json
-        if: always()
-
   compatibility:
     runs-on: ${{ matrix.os }}
     strategy:
