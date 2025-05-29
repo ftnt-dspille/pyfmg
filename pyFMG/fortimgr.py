@@ -120,7 +120,8 @@ class FMGLockContext(object):
             self.uses_adoms = False
 
     def run_unlock(self):
-        for adom_locked in self._locked_adom_list:
+        # have to make a shallow copy of the list, because we are modifying the list as we loop over it which messes up the index
+        for adom_locked in self._locked_adom_list[:]:
             self.unlock_adom(adom_locked)
 
     def lock_adom(self, adom=None, *args, **kwargs):
