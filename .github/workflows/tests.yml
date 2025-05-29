@@ -87,4 +87,4 @@ jobs:
 
       - name: Run basic tests
         run: |
-          pytest tests/test_exceptions.py tests/test_fortimgr.py::TestFortiManagerInit -v
+          pytest tests/ -v
