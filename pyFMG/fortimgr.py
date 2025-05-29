@@ -600,6 +600,8 @@ class FortiManager(object):
         code_fail = 0
         code = 1
         task_info = ""
+        task_duration = 0
+
         while track_task:
             try:
                 code, task_info = self.get("/task/task/{taskid}".format(taskid=task_id))
@@ -623,8 +625,8 @@ class FortiManager(object):
                 num_done = int(task_info["num_done"])
                 num_err = int(task_info["num_err"])
                 num_lines = int(task_info["num_lines"])
-                start_tm = int(task_info["start_tm"])
-                task_duration = (time.time() - start_tm)
+                # Use local time for consistent duration calculation instead of FMG's start_tm
+                task_duration = (time.time() - start)
                 self.req_resp_object.error_msg = "At timestamp {timestamp}:\nTask {taskid} is at {percent}% " \
                                                 "completion and has been running {task_duration} seconds.\n{num_err} tasks have returned an error.".\
                     format(timestamp=datetime.now(), taskid=str(task_id), percent=str(percent), task_duration=str(task_duration),
@@ -632,6 +634,8 @@ class FortiManager(object):
                 self.dprint()
             else:
                 code_fail += 1
+                # Update task_duration even when code != 0 to handle timeout logic
+                task_duration = time.time() - start
             if code_fail == retrieval_fail_gate:
                 self.req_resp_object.error_msg = "Task info retrieval failed over {fail_gate} times. Something has " \
                                                  "caused issues with task {taskid}.".\
