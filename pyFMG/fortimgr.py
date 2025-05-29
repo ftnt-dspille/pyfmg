@@ -445,9 +445,9 @@ class FortiManager(object):
         # Return the full result data set along with 200 as the response code
         return 200, result
 
-    @staticmethod
-    def _get_oauth_token(url, headers, data):
-        res = requests.post(url, headers=headers, json=data)
+
+    def _get_oauth_token(self, url, headers, data):
+        res = requests.post(url, headers=headers, json=data, timeout=self.timeout)
         if res.status_code == 200:
             fac_res = json.loads(res.text)
             return 200, fac_res
@@ -462,7 +462,7 @@ class FortiManager(object):
             "client_id": client_id,
             "token": token
         }
-        requests.post(url, headers=headers, json=rev_data)
+        requests.post(url, headers=headers, json=rev_data, timeout=self.timeout)
 
     def _post_login_request(self, method, params):
         self._update_request_id()
